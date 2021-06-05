@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  database_queries:
+    image: postgres
+    container_name: database_queries_challenge
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=fin_api
+    expose:
+      - 8001
+    volumes:
+      - pgdata:/data/postgres
+
+
+  app:
+    build: .
+    container_name: finweb
+    restart: always
+    ports:
+      - 3333:3333
+      - 9229:9229
+    volumes:
+      - .:/usr/app
+    links:
+      - database_queries
+    depends_on:
+      - database_queries
+
+volumes:
+  pgdata:
+    driver: local
